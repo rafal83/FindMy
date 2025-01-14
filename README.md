@@ -1,3 +1,45 @@
+# Docker
+Run once `request_reports.py` to get `auth.json`
+In folder `keys` add yours keys
+
+build image 
+```bash
+docker build -t findmy .
+```
+
+run docker 
+```bash
+docker run -d \
+  --name findmy \
+  --env ANISETTE_URL=http://192.168.1.134:6969 \
+  --env CONFIG_PATH=/auth.json \
+  --volume ./keys/:/keys \
+  --volume /auth.json:/auth.json \
+  --publish 8126:8126 \
+  --restart unless-stopped \
+  findmy
+```
+
+or with docker-compose.yaml
+```
+version: "3.0"
+services:
+  findmy:
+    image: findmy
+    environment:
+      - TZ=Europe/Paris
+      - ANISETTE_URL=http://192.168.1.134:6969
+      - CONFIG_PATH=/auth.json
+    volumes:
+      - ./keys/:/keys
+      - ./auth.json:/auth.json
+    ports:
+      - 8126:8126
+    restart: unless-stopped
+```
+
+Follow url http://127.0.0.1:8126
+
 # FindMy
 Query Apple's Find My network, based on all the hard work of https://github.com/seemoo-lab/openhaystack/ and @hatomist and @JJTech0130 and @Dadoum.
 

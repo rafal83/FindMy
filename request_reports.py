@@ -26,7 +26,7 @@ def decode_tag(data):
     return {'lat': latitude, 'lon': longitude, 'conf': confidence, 'status':status}
 
 def getAuth(regenerate=False, second_factor='sms'):
-    CONFIG_PATH = os.path.dirname(os.path.realpath(__file__)) + "/auth.json"
+    CONFIG_PATH = os.environ.get("CONFIG_PATH", os.path.dirname(os.path.realpath(__file__)) + "/auth.json")
     if os.path.exists(CONFIG_PATH) and not regenerate:
         with open(CONFIG_PATH, "r") as f: j = json.load(f)
     else:
@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
     privkeys = {}
     names = {}
-    for keyfile in glob.glob(os.path.dirname(os.path.realpath(__file__)) + '/' + args.prefix + '*.keys'):
+    for keyfile in glob.glob('/keys/' + args.prefix + '*.keys'):
         # read key files generated with generate_keys.py
         with open(keyfile) as f:
             hashed_adv = priv = ''
@@ -64,7 +64,7 @@ if __name__ == "__main__":
                 names[hashed_adv] = name
             else: print(f"Couldn't find key pair in {keyfile}")
 
-    unixEpoch = int(datetime.datetime.now().strftime('%s'))
+    unixEpoch = int(datetime.datetime.now().strftime('%S'))
     startdate = unixEpoch - (60 * 60 * args.hours)
     data = { "search": [{"startDate": startdate *1000, "endDate": unixEpoch *1000, "ids": list(names.keys())}] }
 
@@ -73,7 +73,7 @@ if __name__ == "__main__":
             headers=generate_anisette_headers(),
             json=data)
     res = json.loads(r.content.decode())['results']
-    print(f'{r.status_code}: {len(res)} reports received.')
+    # print(f'{r.status_code}: {len(res)} reports received.')
 
     ordered = []
     found = set()
@@ -102,11 +102,11 @@ if __name__ == "__main__":
             tag['goog'] = 'https://maps.google.com/maps?q=' + str(tag['lat']) + ',' + str(tag['lon'])
             found.add(tag['key'])
             ordered.append(tag)
-    print(f'{len(ordered)} reports used.')
+    # print(f'{len(ordered)} reports used.')
     ordered.sort(key=lambda item: item.get('timestamp'))
     for rep in ordered: print(rep)
-    print(f'found:   {list(found)}')
-    print(f'missing: {[key for key in names.values() if key not in found]}')
+    # print(f'found:   {list(found)}')
+    # print(f'missing: {[key for key in names.values() if key not in found]}')
     sq3.close()
     sq3db.commit()
     sq3db.close()

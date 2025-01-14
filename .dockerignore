@@ -1,0 +1,7 @@
+.github
+auth.json
+reports.db
+__pycache__
+keys
+node_modules
+venv

@@ -27,7 +27,7 @@ srp.no_username_in_x()
 import urllib3
 urllib3.disable_warnings()
 
-ANISETTE_URL = 'http://localhost:6969'  # https://github.com/Dadoum/anisette-v3-server
+ANISETTE_URL = os.environ.get("ANISETTE_URL", "http://localhost:6969")  # https://github.com/Dadoum/anisette-v3-server
 
 def icloud_login_mobileme(username='', password='', second_factor='sms'):
     if not username:
@@ -179,7 +179,7 @@ def generate_anisette_headers():
         otp = adi.request_otp(dsid)
         a = {"X-Apple-I-MD": base64.b64encode(bytes(otp.one_time_password)).decode(), "X-Apple-I-MD-M": base64.b64encode(bytes(otp.machine_identifier)).decode()}
     except ImportError:
-        print(f'pyprovision is not installed, querying {ANISETTE_URL} for an anisette server')
+        # print(f'pyprovision is not installed, querying {ANISETTE_URL} for an anisette server')
         h = json.loads(requests.get(ANISETTE_URL, timeout=5).text)
         a = {"X-Apple-I-MD": h["X-Apple-I-MD"], "X-Apple-I-MD-M": h["X-Apple-I-MD-M"]}
     a.update(generate_meta_headers(user_id=USER_ID, device_id=DEVICE_ID))
