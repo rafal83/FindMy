@@ -2,15 +2,15 @@
 Run once `request_reports.py` to get `auth.json`
 In folder `keys` add yours keys
 
-build image 
+build image
 ```bash
 docker build -t findmy .
 ```
 
-run docker 
+run docker `findmy` (local build) or `ghcr.io/rafal83/findmy:main`
 ```bash
 docker run -d \
-  --name findmy \
+  --name ghcr.io/rafal83/findmy:main \
   --env ANISETTE_URL=http://192.168.1.134:6969 \
   --env CONFIG_PATH=/auth.json \
   --volume ./keys/:/keys \
@@ -25,7 +25,7 @@ or with docker-compose.yaml
 version: "3.0"
 services:
   findmy:
-    image: findmy
+    image: ghcr.io/rafal83/findmy:main
     environment:
       - TZ=Europe/Paris
       - ANISETTE_URL=http://192.168.1.134:6969
