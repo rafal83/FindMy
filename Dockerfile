@@ -17,6 +17,7 @@ RUN python -m pip install .
 
 RUN sqlite3 reports.db 'CREATE TABLE reports (id_short TEXT, timestamp INTEGER, datePublished INTEGER, payload TEXT, id TEXT, statusCode INTEGER, PRIMARY KEY(id_short,timestamp))'
 
+WORKDIR /usr/src/app/
 RUN mkdir /usr/src/app/anisette
 
 COPY . .
